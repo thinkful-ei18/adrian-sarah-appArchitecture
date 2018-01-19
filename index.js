@@ -1,75 +1,103 @@
 'use strict';
 
-/* 
-To complete this challenge requires:
-
-Using DOM manipulation and traversal to dynamically add and remove HTML elements and apply styles.
-Linking to an externally hosted library (jQuery) and a locally hosted JavaScript file (index.js).
-Linking to your application JavaScript file from the index.html page.
-Using this and event delegation
-Requirements
-In terms of user experience, your shopping list app must allow users to:
-
-  ONE. enter items they need to purchase by entering text and hitting "Return" or clicking the "Add item" button
-  TWO. check and uncheck items on the list by clicking the "Check" button
-  THREE. permanently remove items from the list
-
-  Additionally:
-
-You must use a CDN-hosted version of jQuery *
-Put your application code in a file called index.js and link to it in index.html *
-Be sure to put both script elements at the bottom of the <body> element. *
-Do not alter index.html or main.css other than adding the links to the external JavaScript inside index.html. Write JavaScript code that works with the existing HTML and CSS to implement the required features. *
-Hint: you may find it helpful to read up on and use the following jQuery methods: .submit(), preventDefault(), toggleClass(), and closest().
-*/
+const STORE = [
+  {name: "apples", checked: false},
+  {name: "oranges", checked: false},
+  {name: "milk", checked: true},
+  {name: "bread", checked: false}
+];
 
 
-
-// ONE
-// listen for the button to be clicked *
-// when clicked find the text in the input field *
-// add the chosen text to the list *
-
-$('#js-shopping-list-form').submit(function (event) {
-  event.preventDefault();
-  let shoppingItem = $('.js-shopping-list-entry').val();
-  $('ul').append(`<li>
-        <span class="shopping-item">${shoppingItem}</span>
-        <div class="shopping-item-controls">
-          <button class="shopping-item-toggle">
+function generateItemElement(item, itemIndex, template) {
+  return `
+    <li class="js-item-index-element" data-item-index="${itemIndex}">
+      <span class="shopping-item js-shopping-item ${item.checked ? "shopping-item__checked" : ''}">${item.name}</span>
+      <div class="shopping-item-controls">
+        <button class="shopping-item-toggle js-item-toggle">
             <span class="button-label">check</span>
-          </button>
-          <button class="shopping-item-delete">
+        </button>
+        <button class="shopping-item-delete js-item-delete">
             <span class="button-label">delete</span>
-          </button>
-        </div>
-      </li>`);
-});
+        </button>
+      </div>
+    </li>`;
+}
 
 
+function generateShoppingItemsString(shoppingList) {
+  console.log("Generating shopping list element");
 
-// TWO
-$('.shopping-list').on('click', '.shopping-item-toggle', function (event) {
-  $(this).closest('li').find('.shopping-item').toggleClass('shopping-item__checked');
-});
-
-/*
-$('.shopping-list') // look out for something with this class
-.on('click', // when you click something with the class above...
-'.shopping-item-toggle', // look for an element with this class that's INSIDE the shopping-list class.
-function (event) { // now do this
-  $(this) // this = event.currentTarget. SO, listen up for the event.currentTarget
-  .closest // find the closest PARENT element with the following characteristics
-  ('li') // characteristics = <li>
-  .find // find the closest CHILD element with the following characteristics
-  ('.shopping-item') // characteristics = shopping-item class
-  .toggleClass('shopping-item__checked'); // add the class inside the ()
-});
-*/
+  const items = shoppingList.map((item, index) => generateItemElement(item, index));
+  
+  return items.join("");
+}
 
 
+function renderShoppingList() {
+  // render the shopping list in the DOM
+  console.log('`renderShoppingList` ran');
+  const shoppingListItemsString = generateShoppingItemsString(STORE);
 
-// THREE
-$('.shopping-list').on('click', '.shopping-item-delete', function (event) {
-  $(this).closest('li').remove();
-});
+  // insert that HTML into the DOM
+  $('.js-shopping-list').html(shoppingListItemsString);
+}
+
+
+function addItemToShoppingList(itemName) {
+  console.log(`Adding "${itemName}" to shopping list`);
+  STORE.push({name: itemName, checked: false});
+}
+
+function handleNewItemSubmit() {
+  $('#js-shopping-list-form').submit(function(event) {
+    event.preventDefault();
+    console.log('`handleNewItemSubmit` ran');
+    const newItemName = $('.js-shopping-list-entry').val();
+    $('.js-shopping-list-entry').val('');
+    addItemToShoppingList(newItemName);
+    renderShoppingList();
+  });
+}
+
+function toggleCheckedForListItem(itemIndex) {
+  console.log("Toggling checked property for item at index " + itemIndex);
+  STORE[itemIndex].checked = !STORE[itemIndex].checked;
+}
+
+
+function getItemIndexFromElement(item) {
+  const itemIndexString = $(item)
+    .closest('.js-item-index-element')
+    .attr('data-item-index');
+  return parseInt(itemIndexString, 10);
+}
+
+function handleItemCheckClicked() {
+  $('.js-shopping-list').on('click', `.js-item-toggle`, event => {
+    console.log('`handleItemCheckClicked` ran');
+    const itemIndex = getItemIndexFromElement(event.currentTarget);
+    toggleCheckedForListItem(itemIndex);
+    renderShoppingList();
+  });
+}
+
+
+function handleDeleteItemClicked() {
+  // this function will be responsible for when users want to delete a shopping list
+  // item
+  console.log('`handleDeleteItemClicked` ran')
+}
+
+// this function will be our callback when the page loads. it's responsible for
+// initially rendering the shopping list, and activating our individual functions
+// that handle new item submission and user clicks on the "check" and "delete" buttons
+// for individual shopping list items.
+function handleShoppingList() {
+  renderShoppingList();
+  handleNewItemSubmit();
+  handleItemCheckClicked();
+  handleDeleteItemClicked();
+}
+
+// when the page loads, call `handleShoppingList`
+$(handleShoppingList);
