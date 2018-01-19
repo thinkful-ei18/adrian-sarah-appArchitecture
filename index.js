@@ -17,26 +17,30 @@ const STORE = {
 
 
 function generateItemElement(item, itemIndex, template) {
-  // convert to if and else statement with condition based on isEditing
+  // need to this return into if and else statement with condition based on isEditing
   
-  // old return statement!
-  // return `
-  //   <li class="js-item-index-element" data-item-index="${itemIndex}">
-  //     <span class="shopping-item js-shopping-item ${item.checked ? 'shopping-item__checked' : ''}">${item.name}
-  //     </span>
-  //     <div class="shopping-item-controls">
-  //     <!-- new edit buttons -->
-  //       <button class="shopping-item-edit js-item-edit">
-  //           <span class="button-label">Edit</span>
-  //       </button>
-  //       <button class="shopping-item-toggle js-item-toggle">
-  //           <span class="button-label">check</span>
-  //       </button>
-  //       <button class="shopping-item-delete js-item-delete">
-  //           <span class="button-label">delete</span>
-  //       </button>
-  //     </div>
-  //   </li>`;
+  // old return statement! uncomment this to get back the old way it used to work.
+  // vvvvvvvvvvv
+
+  return `
+    <li class="js-item-index-element" data-item-index="${itemIndex}">
+      <span class="shopping-item js-shopping-item
+       ${item.checked ? 'shopping-item__checked' : ''} <!-- checks for the checked property! -->
+        ${item.isEditing ? 'shopping-item__editing' : ''}"> <!-- checks for if the item is being edited -->
+       ${item.name} </span>
+      <div class="shopping-item-controls">
+      <!-- new edit buttons -->
+        <button class="shopping-item-edit js-item-edit">
+            <span class="button-label">Edit</span>
+        </button>
+        <button class="shopping-item-toggle js-item-toggle">
+            <span class="button-label">check</span>
+        </button>
+        <button class="shopping-item-delete js-item-delete">
+            <span class="button-label">delete</span>
+        </button>
+      </div>
+    </li>`;
 }
 
 
