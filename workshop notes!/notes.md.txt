@@ -1,0 +1,10 @@
+### user actions for our handleStartEditItem function needs to take:
+
+1. get info from user action
+2. update the store depending on user action
+3. re-render AKA send the store back to the DOM
+
+when adding isEditing property and value:
+
+- if item doesn't have that key/value, a conditional test will result in FALSE.
+- if the default value is FALSE, 
