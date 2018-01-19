@@ -1,4 +1,6 @@
 'use strict';
+/**
+ * 
 
 const STORE = [
   {name: "apples", checked: false},
@@ -100,4 +102,4 @@ function handleShoppingList() {
 }
 
 // when the page loads, call `handleShoppingList`
-$(handleShoppingList);
+$(handleShoppingList); */
