@@ -1,6 +1,4 @@
 'use strict';
-/**
- * 
 
 const STORE = [
   {name: "apples", checked: false},
@@ -83,10 +81,18 @@ function handleItemCheckClicked() {
   });
 }
 
+function removeListItem(itemIndex) {
+  console.log("Delete clicked for item at index " + itemIndex);
+  STORE.splice(itemIndex);
+}
 
 function handleDeleteItemClicked() {
-  // this function will be responsible for when users want to delete a shopping list
-  // item
+  $('.js-shopping-list').on('click', `.js-item-delete`, event => {
+    console.log('`handleItemDeleteClicked` ran');
+    const itemIndex = getItemIndexFromElement(event.currentTarget);
+    removeListItem(itemIndex);
+    renderShoppingList();
+  });
   console.log('`handleDeleteItemClicked` ran')
 }
 
@@ -102,4 +108,4 @@ function handleShoppingList() {
 }
 
 // when the page loads, call `handleShoppingList`
-$(handleShoppingList); */
+$(handleShoppingList); 
